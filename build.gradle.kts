@@ -41,6 +41,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("com.bucket4j:bucket4j_jdk17-core:8.15.0")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+
 }
 
 tasks.withType<Test> {
