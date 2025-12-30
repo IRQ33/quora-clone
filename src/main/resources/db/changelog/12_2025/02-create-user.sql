@@ -4,5 +4,5 @@ CREATE TABLE users(
     email VARCHAR(100),
     password VARCHAR(150),
     url_image VARCHAR(300),
-    date_of_created DATE DEFAULT NOW() NOT NULL,
+    date_created DATE DEFAULT NOW() NOT NULL
 );

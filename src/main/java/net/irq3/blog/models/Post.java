@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "post")
+@Table(name = "posts")
 public class Post {
     @Column(name = "id")
     @Id
@@ -30,10 +30,10 @@ public class Post {
     String textArticle;
 
     @Column(name = "date_created")
-    Date date_created;
+    Date dateCreated;
 
     @Column(name = "date_updated")
-    Date date_updated;
+    Date dateUpdated;
 }
 /*
 CREATE TABLE posts(

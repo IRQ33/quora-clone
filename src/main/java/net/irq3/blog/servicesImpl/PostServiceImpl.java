@@ -2,9 +2,9 @@ package net.irq3.blog.servicesImpl;
 
 import net.irq3.blog.mappers.PostMapper;
 import net.irq3.blog.models.Post;
-import net.irq3.blog.models.dto.PostChangeDTO;
-import net.irq3.blog.models.dto.PostCreateDTO;
-import net.irq3.blog.models.dto.PostCreatedDTO;
+import net.irq3.blog.models.dto.post.PostChangeDTO;
+import net.irq3.blog.models.dto.post.PostCreateDTO;
+import net.irq3.blog.models.dto.post.PostCreatedDTO;
 import net.irq3.blog.repositories.PostRepository;
 import net.irq3.blog.services.PostService;
 import net.irq3.blog.utils.Result;

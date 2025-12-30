@@ -1,9 +1,9 @@
 package net.irq3.blog.services;
 
 import net.irq3.blog.models.Post;
-import net.irq3.blog.models.dto.PostChangeDTO;
-import net.irq3.blog.models.dto.PostCreateDTO;
-import net.irq3.blog.models.dto.PostCreatedDTO;
+import net.irq3.blog.models.dto.post.PostChangeDTO;
+import net.irq3.blog.models.dto.post.PostCreateDTO;
+import net.irq3.blog.models.dto.post.PostCreatedDTO;
 import net.irq3.blog.utils.Result;
 
 public interface PostService {

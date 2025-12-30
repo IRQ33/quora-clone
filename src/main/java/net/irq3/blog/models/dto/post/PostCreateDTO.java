@@ -1,11 +1,11 @@
-package net.irq3.blog.models.dto;
+package net.irq3.blog.models.dto.post;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.util.Date;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class PostCreateDTO {
     @Size(min = 0,max = 200)
     String title;
