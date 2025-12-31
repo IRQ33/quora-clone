@@ -3,7 +3,10 @@ package net.irq3.blog.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import net.irq3.blog.utils.PermissionConverter;
 
 import java.time.LocalDateTime;
@@ -12,7 +15,9 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
 public class User {
+
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

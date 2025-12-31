@@ -1,11 +1,17 @@
 package net.irq3.blog.detailsServices;
 
 import net.irq3.blog.repositories.UserRepository;
+import net.irq3.blog.utils.PermissionConverter;
+import org.hibernate.sql.ast.tree.expression.Collation;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
+@Service
 public class UserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -15,9 +21,12 @@ public class UserDetailService implements UserDetailsService {
     }
 
     @Override public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        var user = userRepository.getUserByEmail(email);
+        var user = userRepository.getUserByEmail(email).orElseThrow();
+        var roles = user.getPermissions().stream().map(Enum::name).toArray(String[]::new);
 
-        return user.map(usr-> User.builder().username(usr.getEmail()).password(usr.getPassword())
-                .roles("USER").build()).orElseThrow(()->new RuntimeException("No user with this email"));
+        return User.builder().username(user.getEmail())
+                .password(user.getPassword())
+                .roles(roles)
+                .build();
     }
 }

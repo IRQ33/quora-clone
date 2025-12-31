@@ -11,5 +11,4 @@ public interface PostService {
     Result<Post,String> getPost(Long id);
     Result<String, String> deletePost(Long id);
     Result<String, String> changePost(PostChangeDTO change);
-
 }
