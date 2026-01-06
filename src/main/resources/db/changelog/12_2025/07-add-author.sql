@@ -1,0 +1,2 @@
+ALTER TABLE posts ADD COLUMN author BIGINT NOT NULL;
+ALTER TABLE posts ADD CONSTRAINT fk_posts_author FOREIGN KEY(author) REFERENCES users(id);

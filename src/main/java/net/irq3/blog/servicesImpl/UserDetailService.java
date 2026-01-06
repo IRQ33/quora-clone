@@ -1,15 +1,11 @@
-package net.irq3.blog.detailsServices;
+package net.irq3.blog.servicesImpl;
 
 import net.irq3.blog.repositories.UserRepository;
-import net.irq3.blog.utils.PermissionConverter;
-import org.hibernate.sql.ast.tree.expression.Collation;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Service
 public class UserDetailService implements UserDetailsService {

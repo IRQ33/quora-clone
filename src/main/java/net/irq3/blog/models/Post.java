@@ -10,9 +10,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "posts")
 public class Post {
     @Column(name = "id")
@@ -29,11 +27,14 @@ public class Post {
     @Column(name = "text_article")
     String textArticle;
 
-    @Column(name = "date_created")
+    @Column(name = "date_created", insertable = false, updatable = false)
     Date dateCreated;
 
     @Column(name = "date_updated")
     Date dateUpdated;
+
+    @Column(name = "author")
+    Long authorId;
 }
 /*
 CREATE TABLE posts(

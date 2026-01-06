@@ -15,8 +15,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password4j.Argon2Password4jPasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -46,8 +48,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http){
         http.securityMatcher("/api/v1/**")
                 .authorizeHttpRequests(req->
-                        req.requestMatchers("/api/v1/register").permitAll())
-                .csrf(AbstractHttpConfigurer::disable);
+                        req.requestMatchers("/api/v1/register","/api/v1/login").permitAll().anyRequest().authenticated())
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(form->
+                        form.loginPage("/api/v1/login")
+                                .loginProcessingUrl("/api/v1/login")
+                                .permitAll()
+                                .successHandler((req, res, auth) -> res.setStatus(200))
+                                .failureHandler((req, res, ex) -> res.sendError(401, "Błąd logowania")))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                );;
 
         return http.build();
     }
@@ -63,36 +74,14 @@ public class SecurityConfig {
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .with(authorizationServerConfigurer, (authorizationServer) ->
                         authorizationServer
-                                .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
+                                .oidc(Customizer.withDefaults())
                 )
-                .authorizeHttpRequests((authorize) ->
-                        authorize
-                                .requestMatchers("/api/v1/register").permitAll()
-                                .anyRequest().authenticated()
-                )
-
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new LoginUrlAuthenticationEntryPoint("/api/v1/login"),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                         )
                 );
-
-        return http.build();
-    }
-
-    @Bean
-    @Order(3)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
-            throws Exception {
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/v1/register","/error").permitAll()
-                        .anyRequest().authenticated()
-                )
-                // Form login handles the redirect to the login page from the
-                // authorization server filter chain
-                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
@@ -154,6 +143,6 @@ public class SecurityConfig {
     }
 
     @Bean PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        return new Argon2Password4jPasswordEncoder();
     }
 }

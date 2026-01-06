@@ -1,5 +1,5 @@
 package net.irq3.blog.models;
 
 public enum Permissions {
-    USER,ADMIN
+    USER,AUTHOR,ADMIN
 }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile(value = "dev")
 @Configuration
+@Deprecated
 public class TestWebConfig {
 
 //    @Bean
