@@ -1,0 +1,15 @@
+meta {
+  name: test_login
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:8080/is_logged
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

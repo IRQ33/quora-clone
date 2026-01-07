@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import net.irq3.blog.handlers.AutoRegisterHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -42,29 +43,8 @@ import java.util.UUID;
 @Configuration
 public class SecurityConfig {
 
-
     @Bean
     @Order(1)
-    public SecurityFilterChain filterChain(HttpSecurity http){
-        http.securityMatcher("/api/v1/**")
-                .authorizeHttpRequests(req->
-                        req.requestMatchers("/api/v1/register","/api/v1/login").permitAll().anyRequest().authenticated())
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(form->
-                        form.loginPage("/api/v1/login")
-                                .loginProcessingUrl("/api/v1/login")
-                                .permitAll()
-                                .successHandler((req, res, auth) -> res.setStatus(200))
-                                .failureHandler((req, res, ex) -> res.sendError(401, "Błąd logowania")))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                );;
-
-        return http.build();
-    }
-
-    @Bean
-    @Order(2)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
             throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
@@ -86,6 +66,25 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    @Order(2)
+    public SecurityFilterChain filterChain(HttpSecurity http, AutoRegisterHandler autoRegisterHandler){
+        http.securityMatcher("/api/v1/**","/login/**","/oauth2/**","/is_logged")
+                .authorizeHttpRequests(req->
+                        req.requestMatchers("/api/v1/register","/api/v1/login","/login").permitAll().anyRequest().authenticated())
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(form->
+                        form.successHandler(autoRegisterHandler))
+                .oauth2Login(login-> login
+                        .successHandler(autoRegisterHandler)
+
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                );
+
+        return http.build();
+    }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
@@ -143,6 +142,6 @@ public class SecurityConfig {
     }
 
     @Bean PasswordEncoder passwordEncoder(){
-        return new Argon2Password4jPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 }

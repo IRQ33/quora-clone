@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
         post.setDescription(postCreate.getDescription());
         post.setTextArticle(postCreate.getTextArticle());
 
-        var user = easyUser.getUser();
+        var user = easyUser.geLoggedtUser();
         if(user.isEmpty()){
             return Result.resultError("You re not logged in");
         }
@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override public Result<String, String> deletePost(Long id) {
-       Optional<User> user = easyUser.getUser();
+       Optional<User> user = easyUser.geLoggedtUser();
 
        if(user.isEmpty()){
             return Result.resultError("You re not logged in");
