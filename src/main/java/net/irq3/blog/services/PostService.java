@@ -4,6 +4,7 @@ import net.irq3.blog.models.Post;
 import net.irq3.blog.models.dto.post.PostChangeDTO;
 import net.irq3.blog.models.dto.post.PostCreateDTO;
 import net.irq3.blog.models.dto.post.PostCreatedDTO;
+import net.irq3.blog.models.dto.post.PostReplyDTO;
 import net.irq3.blog.utils.Result;
 
 public interface PostService {
@@ -11,4 +12,5 @@ public interface PostService {
     Result<Post,String> getPost(Long id);
     Result<String, String> deletePost(Long id);
     Result<String, String> changePost(PostChangeDTO change);
+    Result<String,String> replyPost(PostReplyDTO replyDTO);
 }

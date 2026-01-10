@@ -1,0 +1,2 @@
+ALTER TABLE posts ADD COLUMN reply_post BIGINT;
+ALTER TABLE posts ADD CONSTRAINT fk_replies_post FOREIGN KEY(reply_post) REFERENCES posts(id) ON DELETE CASCADE;

@@ -35,6 +35,9 @@ public class Post {
 
     @Column(name = "author")
     Long authorId;
+
+    @Column(name = "reply_post")
+    Long reply_post;
 }
 /*
 CREATE TABLE posts(

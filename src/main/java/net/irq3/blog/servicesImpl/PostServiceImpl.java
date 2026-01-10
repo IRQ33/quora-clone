@@ -7,6 +7,7 @@ import net.irq3.blog.models.User;
 import net.irq3.blog.models.dto.post.PostChangeDTO;
 import net.irq3.blog.models.dto.post.PostCreateDTO;
 import net.irq3.blog.models.dto.post.PostCreatedDTO;
+import net.irq3.blog.models.dto.post.PostReplyDTO;
 import net.irq3.blog.repositories.PostRepository;
 import net.irq3.blog.repositories.UserRepository;
 import net.irq3.blog.services.PostService;
@@ -35,19 +36,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override public Result<PostCreatedDTO, String> createPost(PostCreateDTO postCreate) {
-        //TODO: Auth
 
-        var post = new  Post();
-        post.setTitle(postCreate.getTitle());
-        post.setDescription(postCreate.getDescription());
-        post.setTextArticle(postCreate.getTextArticle());
-
-        var user = easyUser.geLoggedtUser();
-        if(user.isEmpty()){
+        var usr = easyUser.geLoggedtUser();
+        if(usr.isEmpty()){
             return Result.resultError("You re not logged in");
         }
-        post.setAuthorId(user.get().getId());
+        var user = usr.get();
+        if(user.getIsMutted()){
+            return Result.resultError("You are muted!!!");
+        }
+
+        var post = makePost(postCreate.getTitle(), postCreate.getDescription(),
+                postCreate.getTextArticle(), user.getId());
         postRepository.save(post);
+
         return Result.resultOk(postMapper.toPostCreatedDTO(post));
     }
 
@@ -70,7 +72,8 @@ public class PostServiceImpl implements PostService {
            return Result.resultError("Post with this id doesn't exists");
        }
 
-       if(!Objects.equals(post.get().getAuthorId(), user.get().getId())&& !user.get().getPermissions().contains(Permissions.ADMIN)){
+       if(!Objects.equals(post.get().getAuthorId(), user.get().getId())&&
+               !user.get().getPermissions().contains(Permissions.ADMIN)){
            return Result.resultError("You re not the author of this post");
        }
        postRepository.delete(post.get());
@@ -78,6 +81,37 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override public Result<String, String> changePost(PostChangeDTO change) {
-        return null;
+        return Result.resultError("You cant change posts rn");
+    }
+
+    @Override public Result<String, String> replyPost(PostReplyDTO replyDTO) {
+        var post = postRepository.getPostById(replyDTO.getId());
+        if(post.isEmpty()){
+            return Result.resultError("This post doesn't exits");
+        }
+        var usr = easyUser.geLoggedtUser();
+        if(usr.isEmpty()){
+            return Result.resultError("You have to be logged in to reply");
+        }
+        var user = usr.get();
+        if(user.getIsMutted()){
+            return Result.resultError("You are muted!!!");
+        }
+        var newPost = makePost(replyDTO.getTitle(),replyDTO.getDescription(),
+                replyDTO.getTextArticle(),user.getId());
+
+        newPost.setReply_post(post.get().getId());
+        postRepository.save(newPost);
+        return Result.resultOk("You replied!");
+    }
+
+
+    private Post makePost(String title, String description, String textArticle, long authorId){
+        var post = new Post();
+        post.setTitle(title);
+        post.setDescription(description);
+        post.setTextArticle(textArticle);
+        post.setAuthorId(authorId);
+        return post;
     }
 }

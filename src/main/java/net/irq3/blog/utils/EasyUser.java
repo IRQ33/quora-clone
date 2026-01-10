@@ -27,7 +27,6 @@ public class EasyUser {
         if(user instanceof UserDetails){
             email = ((UserDetails) user).getUsername();
         } else if (user instanceof OAuth2User) {
-            //Not tested yet
             email = ((OAuth2User) user).getAttribute("email");
             if(email==null){
                email = ((OAuth2User) user).getAttribute("login");

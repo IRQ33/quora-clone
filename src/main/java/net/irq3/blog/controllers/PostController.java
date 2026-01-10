@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import net.irq3.blog.models.Post;
 import net.irq3.blog.models.dto.post.PostCreateDTO;
 import net.irq3.blog.models.dto.post.PostCreatedDTO;
+import net.irq3.blog.models.dto.post.PostReplyDTO;
 import net.irq3.blog.services.PostService;
 import net.irq3.blog.utils.Result;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +35,10 @@ public class PostController {
         Result<String ,String> result = postService.deletePost(id);
         return ResponseEntity.status(result.status()).body(result);
     }
-
-    @GetMapping("work")
-    public String working(){
-        return "Calm down, everything works";
+    @PostMapping("reply")
+    public ResponseEntity<Result<String, String>> replyPost(@RequestBody @Valid PostReplyDTO postReplyDTO){
+        Result<String,String> result = postService.replyPost(postReplyDTO);
+        return ResponseEntity.status(result.status()).body(result);
     }
+
 }
