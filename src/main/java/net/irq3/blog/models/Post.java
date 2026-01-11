@@ -38,6 +38,9 @@ public class Post {
 
     @Column(name = "reply_post")
     Long reply_post;
+
+    @Column(name = "topic")
+    Long topic;
 }
 /*
 CREATE TABLE posts(

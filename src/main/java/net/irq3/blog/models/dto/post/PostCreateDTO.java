@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostCreateDTO {
     @Size(min = 0,max = 200)
-    String title;
+    protected String title;
     @Size(min = 10, max = 100)
-    String description;
-    String textArticle;
+    protected String description;
+    protected String textArticle;
 
 }

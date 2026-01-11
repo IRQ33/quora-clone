@@ -49,7 +49,10 @@ public class UserServiceImpl implements UserService {
 
     @Override public Result<User, String> getUserInternal(Long id) {
         var user = userRepository.getUserById(id);
-        return user.<Result<User, String>>map(Result::resultOk).orElseGet(() -> Result.resultError("There is no user with this name"));
+        if(user.isEmpty()){
+            Result.resultError("There is no user with this name");
+        }
+        return Result.resultOk(user.get());
     }
 
 
@@ -63,6 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override public Result<String, String> changeUser(PostChangeDTO change) {
-        return null;
+        //TODO:
+        return Result.resultError("This doesn't work");
     }
 }

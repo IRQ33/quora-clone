@@ -1,16 +1,11 @@
 package net.irq3.blog.models.dto.post;
 
-import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Data
+@EqualsAndHashCode(callSuper = true) @Data
 @NoArgsConstructor
-public class PostReplyDTO {
+public class PostReplyDTO extends PostCreateDTO{
     Long id;
-    @Size(min = 0,max = 200)
-    String title;
-    @Size(min = 10, max = 100)
-    String description;
-    String textArticle;
 }

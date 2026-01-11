@@ -36,12 +36,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override public Result<PostCreatedDTO, String> createPost(PostCreateDTO postCreate) {
-
-        var usr = easyUser.geLoggedtUser();
-        if(usr.isEmpty()){
-            return Result.resultError("You re not logged in");
-        }
-        var user = usr.get();
+        var user = getUser().o();
         if(user.getIsMutted()){
             return Result.resultError("You are muted!!!");
         }
@@ -62,18 +57,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override public Result<String, String> deletePost(Long id) {
-       Optional<User> user = easyUser.geLoggedtUser();
-
-       if(user.isEmpty()){
-            return Result.resultError("You re not logged in");
-        }
+       var user = getUser().o();
        Optional<Post> post = postRepository.findById(id);
        if(post.isEmpty()){
            return Result.resultError("Post with this id doesn't exists");
        }
 
-       if(!Objects.equals(post.get().getAuthorId(), user.get().getId())&&
-               !user.get().getPermissions().contains(Permissions.ADMIN)){
+       if(!Objects.equals(post.get().getAuthorId(), user.getId())&&
+               !user.getPermissions().contains(Permissions.ADMIN)){
            return Result.resultError("You re not the author of this post");
        }
        postRepository.delete(post.get());
@@ -89,11 +80,7 @@ public class PostServiceImpl implements PostService {
         if(post.isEmpty()){
             return Result.resultError("This post doesn't exits");
         }
-        var usr = easyUser.geLoggedtUser();
-        if(usr.isEmpty()){
-            return Result.resultError("You have to be logged in to reply");
-        }
-        var user = usr.get();
+        var user = getUser().o();
         if(user.getIsMutted()){
             return Result.resultError("You are muted!!!");
         }
@@ -103,6 +90,14 @@ public class PostServiceImpl implements PostService {
         newPost.setReply_post(post.get().getId());
         postRepository.save(newPost);
         return Result.resultOk("You replied!");
+    }
+
+    private Result<User,String> getUser(){
+        var usr = easyUser.geLoggedtUser();
+        if(usr.isEmpty()){
+            return Result.resultError("You have to be logged in to reply");
+        }
+        return Result.resultOk(usr.get());
     }
 
 

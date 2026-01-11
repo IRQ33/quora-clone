@@ -47,4 +47,7 @@ public class User {
 
     @Column(name = "mute")
     private Boolean isMutted;
+    //TODO: Think abt better solution
+//    @Column(name="beloved_topics")
+//    private List<Topic> likedTopics;
 }

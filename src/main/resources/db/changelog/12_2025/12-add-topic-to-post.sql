@@ -1,0 +1,2 @@
+ALTER TABLE posts ADD COLUMN topic BIGINT;
+ALTER TABLE posts ADD CONSTRAINT fk_topic_posts FOREIGN KEY(topic) REFERENCES posts(id);

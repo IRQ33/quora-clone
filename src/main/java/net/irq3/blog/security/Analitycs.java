@@ -34,7 +34,7 @@ public class Analitycs {
             String email = auth.getName();
             Optional<User> usr = userRepository.getUserByEmail(email);
             if(usr.isEmpty()) return;
-
+            //TODO
             //here send the email :D
         }
 

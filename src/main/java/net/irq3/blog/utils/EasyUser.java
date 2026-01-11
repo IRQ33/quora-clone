@@ -12,9 +12,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+
+/**
+ *  Class works only for spring boot auth and google oauth2
+ */
 @Service
 public class EasyUser {
-    
+
+
     private final UserRepository userRepository;
 
     public EasyUser(UserRepository userRepository) {
