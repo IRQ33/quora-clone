@@ -45,6 +45,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.6.3")
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
     implementation("org.springframework.boot:spring-boot-starter-security-oauth2-client")
+    implementation("com.bucket4j:bucket4j_jdk17-core:8.16.0")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 }
 

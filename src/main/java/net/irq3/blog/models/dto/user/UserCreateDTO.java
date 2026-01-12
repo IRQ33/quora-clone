@@ -5,11 +5,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.irq3.blog.validators.UniqueEmail;
+import net.irq3.blog.validators.ValidName;
 
 @Data
 @NoArgsConstructor
 public class UserCreateDTO {
     @Size(max = 80)
+    @ValidName
     private String userName;
     @Email
     @UniqueEmail
