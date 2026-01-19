@@ -13,6 +13,7 @@ import net.irq3.blog.services.UserService;
 import net.irq3.blog.utils.Result;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
+    @Transactional
     @Override public Result<UserCreatedDTO, String> createUser(UserCreateDTO createDTO) {
         var user = new User();
         user.setEmail(createDTO.getEmail());
@@ -42,11 +44,12 @@ public class UserServiceImpl implements UserService {
         return Result.resultOk(userMapper.toUserCreateDTO(user));
     }
 
+    @Transactional(readOnly = true)
     @Override public Result<UserDTO, String> getUser(Long id) {
         var user = getUserInternal(id);
         return user.isOk()? Result.resultOk(userMapper.toUserDTO(user.o())): Result.resultError(user.e());
     }
-
+    @Transactional(readOnly = true)
     @Override public Result<User, String> getUserInternal(Long id) {
         var user = userRepository.getUserById(id);
         if(user.isEmpty()){
@@ -56,6 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional()
     @Override public Result<String, String> deleteUser(Long id) {
         var user = getUserInternal(id);
         if(user.isOk()){
@@ -67,6 +71,6 @@ public class UserServiceImpl implements UserService {
 
     @Override public Result<String, String> changeUser(PostChangeDTO change) {
         //TODO:
-        return Result.resultError("This doesn't work");
+        return Result.resultError("This future is under maintain");
     }
 }

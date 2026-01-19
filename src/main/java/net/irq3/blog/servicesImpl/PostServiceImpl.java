@@ -16,6 +16,7 @@ import net.irq3.blog.utils.Result;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public class PostServiceImpl implements PostService {
         this.easyUser = easyUser;
     }
 
+    @Transactional()
     @Override public Result<PostCreatedDTO, String> createPost(PostCreateDTO postCreate) {
         var user = getUser().o();
         if(user.getIsMutted()){
@@ -48,6 +50,7 @@ public class PostServiceImpl implements PostService {
         return Result.resultOk(postMapper.toPostCreatedDTO(post));
     }
 
+    @Transactional(readOnly = true)
     @Override public Result<Post, String> getPost(Long id) {
         Optional<Post> post = postRepository.getPostById(id);
         if(post.isEmpty()){
@@ -56,6 +59,7 @@ public class PostServiceImpl implements PostService {
         return Result.resultOk(post.get());
     }
 
+    @Transactional
     @Override public Result<String, String> deletePost(Long id) {
        var user = getUser().o();
        Optional<Post> post = postRepository.findById(id);
@@ -71,6 +75,7 @@ public class PostServiceImpl implements PostService {
        return Result.resultOk("You deleted post with Id: "+post.get().getId());
     }
 
+    @Transactional
     @Override public Result<String, String> changePost(PostChangeDTO change) {
         return Result.resultError("You cant change posts rn");
     }
