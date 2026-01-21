@@ -34,6 +34,7 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -43,9 +44,10 @@ import java.util.UUID;
 
 @EnableWebSecurity
 @Configuration
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60*24*20)
 public class SecurityConfig {
 
-    private final RedisTemplate<String,Object> template;
+    private final RedisTemplate<String, Object> template;
 
     public SecurityConfig(RedisTemplate<String, Object> template) {
         this.template = template;
@@ -76,14 +78,14 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain filterChain(HttpSecurity http, AutoRegisterHandler autoRegisterHandler){
+    public SecurityFilterChain filterChain(HttpSecurity http, AutoRegisterHandler autoRegisterHandler) {
         http.securityMatcher("/**")
-                .authorizeHttpRequests(req->
-                        req.requestMatchers("/api/v1/register","/api/v1/login","/login").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(req ->
+                        req.requestMatchers("/api/v1/register", "/api/v1/login", "/login").permitAll().anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(form->
+                .formLogin(form ->
                         form.successHandler(autoRegisterHandler))
-                .oauth2Login(login-> login
+                .oauth2Login(login -> login
                         .successHandler(autoRegisterHandler)
 
                 )
@@ -110,7 +112,7 @@ public class SecurityConfig {
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
         return new RedisRegisteredClientRepository(oidcClient, template);
-       // return new InMemoryRegisteredClientRepository(oidcClient);
+        // return new InMemoryRegisteredClientRepository(oidcClient);
     }
 
     @Bean
@@ -132,8 +134,7 @@ public class SecurityConfig {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
         return keyPair;
@@ -149,7 +150,7 @@ public class SecurityConfig {
         return AuthorizationServerSettings.builder().build();
     }
 
-    @Bean PasswordEncoder passwordEncoder(){
+    @Bean PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

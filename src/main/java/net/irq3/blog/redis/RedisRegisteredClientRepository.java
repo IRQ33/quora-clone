@@ -17,7 +17,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
         this.save(client);
     }
 
-    @Override public void save(RegisteredClient registeredClient) {
+    @Override public void save(RegisteredClient registeredClient) { //TODO: Longer session in the future
         clientRedisTemplate.opsForValue().set("id:"+registeredClient.getId(), registeredClient, Duration.ofMinutes(20));
         clientRedisTemplate.opsForValue().set("clientId:"+registeredClient.getClientId(), registeredClient.getId(),Duration.ofMinutes(20));
 

@@ -29,14 +29,6 @@ public class EasyUser {
     public Optional<User> geLoggedtUser(){
         var user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = "";
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication==null){
-            System.out.println("szpont null");
-        }
-
-        Object principal = authentication.getPrincipal();
-        System.out.println("Principal type: " + principal.getClass().getName());
-        System.out.println("Principal type: " + principal.getClass().getName());
         if(user instanceof UserDetails){
             email = ((UserDetails) user).getUsername();
         } else if (user instanceof OAuth2User) {
