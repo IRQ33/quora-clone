@@ -47,6 +47,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security-oauth2-client")
     implementation("com.bucket4j:bucket4j_jdk17-core:8.16.0")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation("org.springframework.boot:spring-boot-starter-session-data-redis")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-redis-reactive-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-session-data-redis-test")
+    implementation("redis.clients:jedis")
 }
 
 tasks.withType<Test> {

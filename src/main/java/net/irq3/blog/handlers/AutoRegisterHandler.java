@@ -28,9 +28,13 @@ public class AutoRegisterHandler implements AuthenticationSuccessHandler {
 
     @Override public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         var usr = easyUser.getAuth2UserGoogle(authentication);
+        if(usr==null){
+            response.sendRedirect("/hello");
+            return; // it means its not from google
+        }
         var unique = userRepository.getUserByEmail(usr.getEmail());
         if(unique.isPresent()){
-            response.sendRedirect("/is_logged");
+            response.sendRedirect("/hello");
             return;
         }
 
@@ -40,6 +44,6 @@ public class AutoRegisterHandler implements AuthenticationSuccessHandler {
         user.setPermissions(List.of(Permissions.USER));
         user.setDateCreated(LocalDateTime.now());
         userRepository.save(user);
-        response.sendRedirect("/is_logged");
+        response.sendRedirect("/hello");
     }
 }

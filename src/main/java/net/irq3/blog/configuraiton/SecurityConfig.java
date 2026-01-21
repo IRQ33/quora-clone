@@ -6,9 +6,11 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import net.irq3.blog.handlers.AutoRegisterHandler;
+import net.irq3.blog.redis.RedisRegisteredClientRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,6 +45,12 @@ import java.util.UUID;
 @Configuration
 public class SecurityConfig {
 
+    private final RedisTemplate<String,Object> template;
+
+    public SecurityConfig(RedisTemplate<String, Object> template) {
+        this.template = template;
+    }
+
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
@@ -69,7 +77,7 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http, AutoRegisterHandler autoRegisterHandler){
-        http.securityMatcher("/api/v1/**","/login/**","/oauth2/**","/is_logged")
+        http.securityMatcher("/**")
                 .authorizeHttpRequests(req->
                         req.requestMatchers("/api/v1/register","/api/v1/login","/login").permitAll().anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -101,8 +109,8 @@ public class SecurityConfig {
                 .scope(OidcScopes.PROFILE)
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
-
-        return new InMemoryRegisteredClientRepository(oidcClient);
+        return new RedisRegisteredClientRepository(oidcClient, template);
+       // return new InMemoryRegisteredClientRepository(oidcClient);
     }
 
     @Bean
